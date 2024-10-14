@@ -1,3 +1,7 @@
+using SWD392_Assignment.Data.Models;
+using SWD392_Assignment.Data.Repository.IRepository;
+using SWD392_Assignment.Data.Repository;
+
 namespace ESS_Store.WebApp
 {
     public class Program
@@ -8,6 +12,9 @@ namespace ESS_Store.WebApp
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddDbContext<SWD392_Group2_ESStoreContext>();
+            builder.Services.AddScoped<IManageCustomerRepository, ManageCustomerRepository>();
+            builder.Services.AddScoped<IManageRole, ManageRole>();
 
             var app = builder.Build();
 
