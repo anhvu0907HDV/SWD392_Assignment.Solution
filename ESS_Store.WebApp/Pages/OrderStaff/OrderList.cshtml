@@ -1,0 +1,94 @@
+﻿@page
+@model ESS_Store.WebApp.Pages.OrderStaff.OrderListModel
+@{
+
+    ViewData["Title"] = "OrderList";
+}
+
+<p>
+    <a class="btn btn-danger" asp-page="Create">Create New Order</a>
+
+</p>
+
+<form method="get" class="filter-form">
+    <div></div>
+
+
+</form>
+
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Order ID</th>
+            <th><a >Customer Name</a></th>
+            <th>Customer Phone</th>
+             
+            <th>Customer Address</th>
+            <th>Total Items</th>
+            <th>Order Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Order != null && Model.Order.Count > 0)
+        {
+            foreach (var order in Model.Order)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.User?.FullName</td>
+                    <td>@order.User?.Phone</td>
+                    <td>@order.User?.Address</td>
+                    <td>@order.OrderItems?.Count()</td>
+                    <td>@order.CreatedDate</td>
+                    <td>
+                        <a class="btn btn-info" asp-page="./ViewDetail" asp-route-id="@order.Id">View Detail</a>
+                        <a class="btn btn-warning" asp-page="UpdateOrder" asp-route-id="@order.Id">Update</a>
+                        <a class="btn btn-danger" asp-page="./DeleteOrder" asp-route-id="@order.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No orders available.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Optional custom CSS -->
+<style>
+    table {
+        width: 100%;
+        margin-top: 20px;
+    }
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .btn {
+        margin-right: 5px;
+    }
+    .table thead {
+        background-color: #343a40;
+        color: white;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
