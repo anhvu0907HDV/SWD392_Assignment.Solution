@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace SWD392_Assignment.Data.Models
 {
@@ -22,6 +21,8 @@ namespace SWD392_Assignment.Data.Models
         public virtual DbSet<CartItem> CartItems { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Color> Colors { get; set; } = null!;
+        public virtual DbSet<Discount> Discounts { get; set; } = null!;
+        public virtual DbSet<Discountproduct> Discountproducts { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
         public virtual DbSet<FeedbackAttachment> FeedbackAttachments { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
@@ -30,13 +31,16 @@ namespace SWD392_Assignment.Data.Models
         public virtual DbSet<ProductAttachment> ProductAttachments { get; set; } = null!;
         public virtual DbSet<ProductColor> ProductColors { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<Staff> Staffs { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-2N5GN50;Initial Catalog=SWD392_Group2_ESStore; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -147,6 +151,63 @@ namespace SWD392_Assignment.Data.Models
                     .HasColumnName("name");
             });
 
+            modelBuilder.Entity<Discount>(entity =>
+            {
+                entity.ToTable("discounts");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.DisName).HasMaxLength(255);
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.IsPercentage).HasColumnName("isPercentage");
+
+                entity.Property(e => e.ProductId).HasColumnName("productId");
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Discounts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK__discounts__produ__6FE99F9F");
+            });
+
+            modelBuilder.Entity<Discountproduct>(entity =>
+            {
+                entity.ToTable("discountproducts");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.DiscountId).HasColumnName("discountId");
+
+                entity.Property(e => e.ProductId).HasColumnName("productId");
+
+                entity.Property(e => e.Reason)
+                    .HasMaxLength(255)
+                    .HasColumnName("reason");
+
+                entity.HasOne(d => d.Discount)
+                    .WithMany(p => p.Discountproducts)
+                    .HasForeignKey(d => d.DiscountId)
+                    .HasConstraintName("FK__discountp__disco__73BA3083");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Discountproducts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK__discountp__produ__72C60C4A");
+            });
+
             modelBuilder.Entity<Feedback>(entity =>
             {
                 entity.ToTable("feedbacks");
@@ -161,11 +222,18 @@ namespace SWD392_Assignment.Data.Models
                     .HasColumnType("datetime")
                     .HasColumnName("created_date");
 
+                entity.Property(e => e.OrderId).HasColumnName("orderId");
+
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
                 entity.Property(e => e.Star).HasColumnName("star");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.OrderId)
+                    .HasConstraintName("FK__feedbacks__order__76969D2E");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Feedbacks)
@@ -361,6 +429,19 @@ namespace SWD392_Assignment.Data.Models
                 entity.Property(e => e.RoleName)
                     .HasMaxLength(255)
                     .HasColumnName("role_name");
+            });
+
+            modelBuilder.Entity<Staff>(entity =>
+            {
+                entity.ToTable("staffs");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.HireDate).HasColumnType("datetime");
+
+                entity.Property(e => e.StaName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<User>(entity =>

@@ -8,6 +8,8 @@ namespace SWD392_Assignment.Data.Models
         public Product()
         {
             CartItems = new HashSet<CartItem>();
+            Discountproducts = new HashSet<Discountproduct>();
+            Discounts = new HashSet<Discount>();
             Feedbacks = new HashSet<Feedback>();
             OrderItems = new HashSet<OrderItem>();
             ProductAttachments = new HashSet<ProductAttachment>();
@@ -28,6 +30,8 @@ namespace SWD392_Assignment.Data.Models
         public virtual Brand? Brand { get; set; }
         public virtual Category? Category { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
+        public virtual ICollection<Discountproduct> Discountproducts { get; set; }
+        public virtual ICollection<Discount> Discounts { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<ProductAttachment> ProductAttachments { get; set; }

@@ -15,6 +15,7 @@ namespace ESS_Store.WebApp
             builder.Services.AddDbContext<SWD392_Group2_ESStoreContext>();
             builder.Services.AddScoped<IManageCustomerRepository, ManageCustomerRepository>();
             builder.Services.AddScoped<IManageRole, ManageRole>();
+            builder.Services.AddScoped<IManageOrderRepository, ManageOrder>();
 
             var app = builder.Build();
 
